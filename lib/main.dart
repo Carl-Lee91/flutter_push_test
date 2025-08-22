@@ -39,12 +39,21 @@ Future<void> setupFcm() async {
 }
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     //TODO: 파이어베이스 옵션 제작 후
     //options: DefaultFirebaseOptions.currentPlatform
   );
 
   await setupFcm();
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    debugPrint('📱 포그라운드 메시지 수신!');
+    if (message.notification != null) {
+      debugPrint('제목: ${message.notification!.title}');
+      debugPrint('본문: ${message.notification!.body}');
+    }
+  });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
